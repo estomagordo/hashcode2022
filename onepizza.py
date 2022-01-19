@@ -2,12 +2,17 @@ from itertools import combinations
 from sys import argv, stdin
 
 
-def get_input():
-    lines = stdin.readlines()
+def get_input(input_file_name):
+    lines = []
+
+    with open(input_file_name) as f:
+        for line in f:
+            lines.append(line)
+
     c = int(lines[0])
     customers = []
 
-    for x in range(1, 2 * (c+1), 2):
+    for x in range(1, 2*c, 2):
         likes = lines[x].split()[1:]
         dislikes = lines[x+1].split()[1:]
 
@@ -47,9 +52,9 @@ def write_results(solution, file_name):
     with open(file_name, 'w') as f:
         f.write(f'{len(solution)} {" ".join(solution)}')
 
-c, customers = get_input()
+input_file_name = argv[1]
+c, customers = get_input(input_file_name)
 solution = solve_brute(c, customers)
-input_file_name = argv[2]
 output_file_name = '.'.join(map(lambda part: 'out' if part == 'in' else part, input_file_name.split('.')))
 
 write_results(solution, output_file_name)
