@@ -76,7 +76,8 @@ def solve_smarter(customers, output_file_name):
 
 def solve_smarter_and_slicker(customers, output_file_name):
     best = 0
-
+    customers.sort(lambda customer: len(customer[0]) + len(customer[1]))
+    
     def dfs(pos, fed, used, forbidden, customers, output_file_name):
         nonlocal best
 
