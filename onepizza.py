@@ -77,7 +77,7 @@ def solve_smarter(customers, output_file_name):
 def solve_smarter_and_slicker(customers, output_file_name):
     best = 0
 
-    def dfs(pos, fed, used, customers, output_file_name):
+    def dfs(pos, fed, used, forbidden, customers, output_file_name):
         nonlocal best
 
         if fed > best:
@@ -88,7 +88,9 @@ def solve_smarter_and_slicker(customers, output_file_name):
         if pos == len(customers):
             return
 
-        if not any(dislike in used for dislike in customers[pos][1]):
+        canbeadded = not any(dislike in used for dislike in customers[pos][1]) and not any(like in forbidden for like in customers[pos][0])
+
+        if canbeadded:
             new_ingredients = set(customers[pos][0]) - used
             used |= new_ingredients
             dfs(pos+1, fed+1, used, customers, output_file_name)
@@ -96,7 +98,7 @@ def solve_smarter_and_slicker(customers, output_file_name):
 
         dfs(pos+1, fed, used, customers, output_file_name)
 
-    dfs(0, 0, set(), customers, output_file_name)
+    dfs(0, 0, set(), set(), customers, output_file_name)
 
 
 input_file_name = argv[1]
