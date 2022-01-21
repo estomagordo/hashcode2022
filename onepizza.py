@@ -1,5 +1,7 @@
 from itertools import combinations
-from sys import argv, stdin
+from sys import argv, setrecursionlimit
+
+setrecursionlimit(11000)
 
 
 def get_input(input_file_name):
@@ -71,7 +73,31 @@ def solve_smarter(customers, output_file_name):
             frontier.append((fed+1, used | set(customers[pos][0]), pos+1))
         frontier.append((fed, set(used), pos+1))
 
+
+def solve_smarter_and_slicker(customers, output_file_name):    
+    print(f'Working with {len(customers)} customers.')
+
+    def dfs(pos, fed, used, best, customers, output_file_name):
+        if fed > best[0]:
+            print(f'Found a {fed} at position {pos}')
+            best = [fed]
+            write_results(list(used), output_file_name)
+        
+        if pos == len(customers):
+            return
+
+        if not any(dislike in used for dislike in customers[pos][1]):
+            new_ingredients = set(customers[pos][0]) - used
+            used |= new_ingredients
+            dfs(pos+1, fed+1, used, best, customers, output_file_name)
+            used -= new_ingredients
+
+        dfs(pos+1, fed, used, best, customers, output_file_name)
+
+    dfs(0, 0, set(), [0], customers, output_file_name)
+
+
 input_file_name = argv[1]
 c, customers = get_input(input_file_name)
 output_file_name = '.'.join(map(lambda part: 'out' if part == 'in' else part, input_file_name.split('.')))
-solve_smarter(customers, output_file_name)
+solve_smarter_and_slicker(customers, output_file_name)
