@@ -21,6 +21,11 @@ def get_input(input_file_name):
     return c, customers
 
 
+def write_results(solution, file_name):
+    with open(file_name, 'w') as f:
+        f.write(f'{len(solution)} {" ".join(solution)}')
+
+
 def get_all_ingredients(customers):
     all_ingredients = set()
 
@@ -35,7 +40,7 @@ def score_toppings(toppings, customers):
     return sum(all(like in toppings for like in likes) and not any(dislike in toppings for dislike in dislikes) for likes, dislikes in customers)
 
 
-def solve_brute(c, customers):
+def solve_brute(customers):
     all_ingredients = get_all_ingredients(customers)
     best = (0, [])
 
@@ -48,13 +53,25 @@ def solve_brute(c, customers):
     return best[1]
 
 
-def write_results(solution, file_name):
-    with open(file_name, 'w') as f:
-        f.write(f'{len(solution)} {" ".join(solution)}')
+def solve_smarter(customers, output_file_name):
+    best = 0
+    frontier = [(0, set(), 0)]
+    print(f'Working with {len(customers)} customers.')
+
+    for fed, used, pos in frontier:
+        if fed > best:
+            print(f'Found a {fed} at position {pos}')
+            best = fed
+            write_results(list(used), output_file_name)
+        
+        if pos == len(customers):
+            continue
+
+        if not any(dislike in used for dislike in customers[pos][1]):
+            frontier.append((fed+1, used | set(customers[pos][0]), pos+1))
+        frontier.append((fed, set(used), pos+1))
 
 input_file_name = argv[1]
 c, customers = get_input(input_file_name)
-solution = solve_brute(c, customers)
 output_file_name = '.'.join(map(lambda part: 'out' if part == 'in' else part, input_file_name.split('.')))
-
-write_results(solution, output_file_name)
+solve_smarter(customers, output_file_name)
