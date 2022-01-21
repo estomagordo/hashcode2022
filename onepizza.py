@@ -95,11 +95,11 @@ def solve_smarter_and_slicker(customers, output_file_name):
             used |= new_ingredients
             new_forbidden = set(customers[pos][1]) - forbidden
             forbidden |= new_forbidden
-            dfs(pos+1, fed+1, used, customers, output_file_name)
+            dfs(pos+1, fed+1, used, forbidden, customers, output_file_name)
             used -= new_ingredients
             forbidden -= new_forbidden
 
-        dfs(pos+1, fed, used, customers, output_file_name)
+        dfs(pos+1, fed, used, forbidden, customers, output_file_name)
 
     dfs(0, 0, set(), set(), customers, output_file_name)
 
