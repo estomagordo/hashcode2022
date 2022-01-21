@@ -93,8 +93,11 @@ def solve_smarter_and_slicker(customers, output_file_name):
         if canbeadded:
             new_ingredients = set(customers[pos][0]) - used
             used |= new_ingredients
+            new_forbidden = set(customers[pos][1]) - forbidden
+            forbidden |= new_forbidden
             dfs(pos+1, fed+1, used, customers, output_file_name)
             used -= new_ingredients
+            forbidden -= new_forbidden
 
         dfs(pos+1, fed, used, customers, output_file_name)
 
