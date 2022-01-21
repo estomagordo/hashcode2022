@@ -74,13 +74,15 @@ def solve_smarter(customers, output_file_name):
         frontier.append((fed, set(used), pos+1))
 
 
-def solve_smarter_and_slicker(customers, output_file_name):    
-    print(f'Working with {len(customers)} customers.')
+def solve_smarter_and_slicker(customers, output_file_name):
+    best = 0
 
-    def dfs(pos, fed, used, best, customers, output_file_name):
-        if fed > best[0]:
-            print(f'Found a {fed} at position {pos}')
-            best = [fed]
+    def dfs(pos, fed, used, customers, output_file_name):
+        nonlocal best
+
+        if fed > best:
+            print(f'Found a {fed} at position {pos} out of {len(customers)}')
+            best = fed
             write_results(list(used), output_file_name)
         
         if pos == len(customers):
@@ -89,12 +91,12 @@ def solve_smarter_and_slicker(customers, output_file_name):
         if not any(dislike in used for dislike in customers[pos][1]):
             new_ingredients = set(customers[pos][0]) - used
             used |= new_ingredients
-            dfs(pos+1, fed+1, used, best, customers, output_file_name)
+            dfs(pos+1, fed+1, used, customers, output_file_name)
             used -= new_ingredients
 
-        dfs(pos+1, fed, used, best, customers, output_file_name)
+        dfs(pos+1, fed, used, customers, output_file_name)
 
-    dfs(0, 0, set(), [0], customers, output_file_name)
+    dfs(0, 0, set(), customers, output_file_name)
 
 
 input_file_name = argv[1]
